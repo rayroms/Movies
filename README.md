@@ -4,7 +4,7 @@
 
 Movies App provides quick access to the latest movies showing in Nigeria at any given time. It uses GET and POST requests to make calls to a private API. The app takes key code responses and returns the appropriate resource.
 
-1. 'Type cinema one of the following keys to retrieve movies at that cinema. Function uses a POST request.
+A. 'Type cinema one of the following keys to retrieve movies at that cinema. Function uses a POST request.
 
 1.	Leisure Mall
 2.	Unicorn Hotel
@@ -36,4 +36,4 @@ Movies App provides quick access to the latest movies showing in Nigeria at any 
 28.	Owerri Mall
   
 
-2.  Show all cinema names by typing 3. Function uses a GET request and returns a list.
+B.  Show all cinema names by typing 3. Function uses a GET request and returns a list.
