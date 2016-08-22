@@ -4,7 +4,7 @@
 
 Movies App provides quick access to the latest movies showing in Nigeria at any given time. It uses GET and POST requests to make calls to a private API. The app takes key code responses and returns the appropriate resource.
 
-A. 'Type cinema one of the following keys to retrieve movies at that cinema. Function uses a POST request.
+A. Type one of the following keys at the apps command line to retrieve movies at that cinema. Function uses a POST request.
 
 1.	Leisure Mall
 2.	Unicorn Hotel
