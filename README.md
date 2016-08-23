@@ -36,4 +36,3 @@ A. Type one of the following keys at the apps command line to retrieve movies at
 28.	Owerri Mall
   
 
-B.  Show all cinema names by typing 3. Function uses a GET request and returns a list.
