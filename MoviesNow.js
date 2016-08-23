@@ -1,8 +1,7 @@
 
 var util = require('util');
 //init client
-var Client = require('node-rest-client').Client;
-var aClient = new Client();
+var client = require('request');
 
  
 
@@ -11,41 +10,63 @@ function movieApp() {
 	//init class
 	var instruction = new movieDetails() 
 
-	//show instructions
+	//show instructions		'http://purplestone.tv/mhv/Mh_GetMovieForTime.php',
 	 console.log(instruction.params);
 
+	 //show cinema key list ...uses GET function
+	 getReq();
+
 	 function postReq (cinemaKey){
-	 	var args = {
-		    data: { cID: '23' },
-		    headers: { "Content-Type": "application/json" }
-		};
- 
-		aClient.post("http://purplestone.tv/mhv/Mh_GetMovieForTime.php", args, function (data, response) {
-		    // parsed response body as js object 
-		    var movieData = data.toString('utf8'); 
+	 	client.post(
+	    'http://purplestone.tv/mhv/Mh_GetMovieForTime.php',
+	    { form: { cID: cinemaKey } },
+		    function (error, response, body) {
+		        if (!error && response.statusCode == 200) {
+		            var data = JSON.parse(body) ;
 
-		   	console.log( movieData ) ;
-		});
+		            var moviesShowing = data[2];
+		            var infoAboutMovie = data[3];
+		            var label = '----------- Movies Showing at ' + data[0] + ' '+data[1]+' ----------- \n';
+		            for(var k=0; k < moviesShowing.length; k++){
+		            	var movieId = moviesShowing[k]['MovieId'];
+		            	
+		            	label = label.concat( infoAboutMovie[movieId]['Name'] + '\n'+  
+		            		moviesShowing[k]['Time'] +'\n\n' );
+		            	//console.log(infoAboutMovie[movieId]['Name']);
+		            }
 
+		            console.log(label);
+
+		        }
+		    }
+		);
 
 	 }
 
 
 	function getReq (){
-		aClient.get("http://purplestone.tv/mhv/Mh_GetMovieForTime.php", function (data, response) {
-		    // parsed response body as js object 
-		    var cinemaList = JSON.parse(data.toString('utf8'));
 
-		    console.log('-------- Cinema List --------');
-		    var count = 0;
-		    for(var k in cinemaList){
-		    	count++;
-		    	console.log(k +'.\t'+cinemaList[k].Name);
+		client('http://purplestone.tv/mhv/Mh_GetMovieForTime.php', function (error, response, body) {
+		    if (!error && response.statusCode == 200) {
+		        var cinemaList = JSON.parse(body);
+		        //console.log(cinemaList);
+
+		        //console.log('-------- Cinema List --------');
+			    var label ='-------- Cinema List --------\n';
+			    var count = 0;
+
+			    for(var k in cinemaList){
+			    	count++;
+			    	 var str = k +'.\t'+cinemaList[k].Name +'\n';
+			    	 label = label.concat(str);
+
+			    }
+
+			    console.log(label+'\n\n'); 
+
 		    }
+		});
 
-		    console.log('\n\n');
-		    
-		 });
 
 	}
 
@@ -57,26 +78,13 @@ function movieApp() {
 
 	 //get user input data
 	process.stdin.on('data', function (text) {
-	    //console.log('received data:', util.inspect(text));
 	    
 	    if (text === 'quit\n') {
 	      done();
 	    }
-	    else if (text === '23\n'){
-	    	//get movies showing in 1 hr
-	    	console.log('Ozonecinema');
-	    	postReq('23');
-
-	    }
-	    else if(text === '11\n'){
-	    	console.log('Ikejacity')
-	    }
-	    else if(text === '3\n'){
-	    	//run get... list all cinemas in Nigeria
-	    	getReq();
-
-	    	//reshow instructions
-	 		console.log(instruction.params);23
+	    else if (Number(text) > 0 &&  Number(text) < 29){
+	    	//get movies showing now
+	    	postReq(Number(text));
 
 	    }
 
@@ -87,28 +95,19 @@ function movieApp() {
 	    process.exit();
 	}
 
-
-
-
-
-
 }
 
 
-
+//instruction list
 function movieDetails(){
 
-	var params =  [ 'Type cinema key for movies in cinema: 23 - Ozonecinema; 11 - Ikejacity mall', 'Show all cinema names  - Type 3' ];
+	var params =  [ 'Type any cinema key below for movies showing at cinema' ];
 	console.log(params);
 
 }
 
-
+//start app
 var aMovApp = new movieApp();
-
-//aMovApp.getReq();
-
-//console.log( aMovApp.dat);
 
 
 
